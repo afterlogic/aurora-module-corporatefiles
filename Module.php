@@ -16,4 +16,17 @@ namespace Aurora\Modules\CorporateFiles;
 class Module extends \Aurora\Modules\Files\Module
 {
 	protected static $sStorageType = 'corporate';
+	
+	public function init() 
+	{
+		parent::init();
+		$this->RemoveEntries(
+			array(
+				'upload',
+				'download-file'
+			)
+		);
+	}
+	
+	
 }
