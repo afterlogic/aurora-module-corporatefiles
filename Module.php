@@ -13,7 +13,7 @@ namespace Aurora\Modules\CorporateFiles;
 /**
  * @package Modules
  */
-class Module extends \Aurora\Modules\Files\Module
+class Module extends \Aurora\Modules\PersonalFiles\Module
 {
 	protected static $sStorageType = 'corporate';
 	
