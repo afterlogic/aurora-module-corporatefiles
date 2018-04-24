@@ -32,6 +32,34 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 		);
 	}
 	
+	/**
+	 * Obtains list of module settings.
+	 * 
+	 * @return array
+	 */
+	public function GetSettings()
+	{
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
+		
+		return array(
+			'SpaceLimitMb' => $this->getConfig('SpaceLimitMb', 0),
+		);
+	}
+	
+	/**
+	 * Updates module's settings - saves them to config.json file.
+	 * 
+	 * @param int $SpaceLimitMb Space limit setting in Mb.
+	 * @return bool
+	 */
+	public function UpdateSettings($SpaceLimitMb)
+	{
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::TenantAdmin);
+		
+		$this->setConfig('SpaceLimitMb', $SpaceLimitMb);
+		return (bool) $this->saveModuleConfig();
+	}
+	
 	public function onAfterGetQuota($aArgs, &$mResult)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::NormalUser);
@@ -52,7 +80,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 			
 			$mResult = array(
 				'Used' => $iSize,
-				'Limit' => $this->getConfig('UserSpaceLimitMb', 0) * 1024 * 1024
+				'Limit' => $this->getConfig('SpaceLimitMb', 0) * 1024 * 1024
 			);
 			
 			return true;

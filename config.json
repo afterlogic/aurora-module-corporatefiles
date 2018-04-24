@@ -3,7 +3,7 @@
 		false,
 		"bool"
 	],
-    "UserSpaceLimitMb": [
+    "SpaceLimitMb": [
         100,
         "int"
     ]	
