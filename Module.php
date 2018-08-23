@@ -82,8 +82,6 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 				'Used' => $iSize,
 				'Limit' => $this->getConfig('SpaceLimitMb', 0) * 1024 * 1024
 			);
-			
-			return true;
 		}
 	}
 }
