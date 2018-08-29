@@ -30,6 +30,14 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 				'download-file'
 			)
 		);
+		
+		$this->extendObject(
+			'Aurora\Modules\Core\Classes\Tenant', 
+			array (
+				'UsedSpace' => array('bigint', 0),
+			)
+		);		
+		
 	}
 	
 	/**
@@ -60,22 +68,47 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 		return (bool) $this->saveModuleConfig();
 	}
 	
+	public function UpdateUsedSpace()
+	{
+		$iResult = 0;
+		
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::NormalUser);
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
+		
+		if ($oUser)
+		{
+			$oTenant = \Aurora\System\Api::GetModule('Core')->GetTenantById($oUser->IdTenant);
+			
+			if ($oTenant)
+			{
+				$iResult = $this->oApiFilesManager->getUserSpaceUsed($oUser->PublicId, [\Aurora\System\Enums\FileStorageType::Corporate]);
+				$oTenant->{$this->GetName() . '::UsedSpace'} = $iResult;
+				\Aurora\System\Managers\Eav::getInstance()->updateEntity($oTenant);
+			}
+		}
+		
+		return $iResult;
+	}
+	
+	
 	public function onAfterGetQuota($aArgs, &$mResult)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::NormalUser);
 		
 		if ($this->checkStorageType($aArgs['Type']))
 		{
-			$sPublicUserId = \Aurora\System\Api::getUserPublicIdById($aArgs['UserId']);
-			
-			$oDirectory = $this->oApiFilesManager->getDirectory($sPublicUserId, $aArgs['Type'], '/');
 			$iSize = 0;
-			if ($oDirectory)
+
+			$oUser = \Aurora\System\Api::GetModule('Core')->GetUser((int)$aArgs['UserId']);
+
+			if ($oUser)
 			{
-				$sPath = $oDirectory->getPath();
-				
-				$aSizeInfo = \Aurora\System\Utils::GetDirectorySize($sPath);
-				$iSize = $aSizeInfo['size'];
+				$oTenant = \Aurora\System\Api::GetModule('Core')->GetTenantById($oUser->IdTenant);
+
+				if ($oTenant)
+				{
+					$iSize = $oTenant->{$this->GetName() . '::UsedSpace'};
+				}
 			}
 			
 			$mResult = array(
