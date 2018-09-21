@@ -93,14 +93,12 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 	
 	public function onAfterGetQuota($aArgs, &$mResult)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::NormalUser);
-		
 		if ($this->checkStorageType($aArgs['Type']))
 		{
 			$iSize = 0;
 
 			$oUser = \Aurora\System\Api::GetModule('Core')->GetUser((int)$aArgs['UserId']);
-
+			
 			if ($oUser)
 			{
 				$oTenant = \Aurora\System\Api::GetModule('Core')->GetTenantById($oUser->IdTenant);
