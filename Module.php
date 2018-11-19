@@ -31,13 +31,13 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 			)
 		);
 		
-		$this->extendObject(
-			'Aurora\Modules\Core\Classes\Tenant', 
-			array (
+		\Aurora\Modules\Core\Classes\Tenant::extend(
+			self::GetName(),
+			[
 				'UsedSpace' => array('bigint', 0),
-			)
-		);		
-		
+			]
+
+		);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 			if ($oTenant)
 			{
 				$iResult = $this->oApiFilesManager->getUserSpaceUsed($oUser->PublicId, [\Aurora\System\Enums\FileStorageType::Corporate]);
-				$oTenant->{$this->GetName() . '::UsedSpace'} = $iResult;
+				$oTenant->{self::GetName() . '::UsedSpace'} = $iResult;
 				\Aurora\System\Managers\Eav::getInstance()->updateEntity($oTenant);
 			}
 		}
@@ -105,7 +105,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 
 				if ($oTenant)
 				{
-					$iSize = $oTenant->{$this->GetName() . '::UsedSpace'};
+					$iSize = $oTenant->{self::GetName() . '::UsedSpace'};
 				}
 			}
 			
