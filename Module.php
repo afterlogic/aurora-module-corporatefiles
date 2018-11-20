@@ -23,14 +23,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 		parent::init();
 		
 		$this->subscribeEvent('Files::GetQuota::after', array($this, 'onAfterGetQuota'));
-		
-		$this->RemoveEntries(
-			array(
-				'upload',
-				'download-file'
-			)
-		);
-		
+
 		\Aurora\Modules\Core\Classes\Tenant::extend(
 			self::GetName(),
 			[
