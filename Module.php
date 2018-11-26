@@ -74,7 +74,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 			
 			if ($oTenant)
 			{
-				$iResult = $this->oApiFilesManager->getUserSpaceUsed($oUser->PublicId, [\Aurora\System\Enums\FileStorageType::Corporate]);
+				$iResult = $this->getManager()->getUserSpaceUsed($oUser->PublicId, [\Aurora\System\Enums\FileStorageType::Corporate]);
 				$oTenant->{self::GetName() . '::UsedSpace'} = $iResult;
 				\Aurora\System\Managers\Eav::getInstance()->updateEntity($oTenant);
 			}
