@@ -72,7 +72,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 		
 		if ($oUser)
 		{
-			$oTenant = \Aurora\System\Api::GetModule('Core')->GetTenantById($oUser->IdTenant);
+			$oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantUnchecked($oUser->IdTenant);
 			
 			if ($oTenant)
 			{
@@ -92,11 +92,11 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 		{
 			$iSize = 0;
 
-			$oUser = \Aurora\System\Api::GetModule('Core')->GetUser((int)$aArgs['UserId']);
+			$oUser = \Aurora\Modules\Core\Module::Decorator()->GetUserUnchecked((int)$aArgs['UserId']);
 			
 			if ($oUser)
 			{
-				$oTenant = \Aurora\System\Api::GetModule('Core')->GetTenantById($oUser->IdTenant);
+				$oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantUnchecked($oUser->IdTenant);
 
 				if ($oTenant)
 				{
