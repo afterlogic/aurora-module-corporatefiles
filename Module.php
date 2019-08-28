@@ -19,6 +19,7 @@ namespace Aurora\Modules\CorporateFiles;
 class Module extends \Aurora\Modules\PersonalFiles\Module
 {
 	protected static $sStorageType = 'corporate';
+	protected static $iStorageOrder = 20;
 	
 	public function init() 
 	{
