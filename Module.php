@@ -26,14 +26,6 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 		parent::init();
 
 		$this->subscribeEvent('Files::GetQuota::after', array($this, 'onAfterGetQuota'));
-
-		\Aurora\Modules\Core\Classes\Tenant::extend(
-			self::GetName(),
-			[
-				'UsedSpace' => array('bigint', 0),
-			]
-
-		);
 	}
 
 	/**
@@ -78,8 +70,8 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 			if ($oTenant)
 			{
 				$iResult = $this->getManager()->getUserSpaceUsed($oUser->PublicId, [\Aurora\System\Enums\FileStorageType::Corporate]);
-				$oTenant->{self::GetName() . '::UsedSpace'} = $iResult;
-				\Aurora\System\Managers\Eav::getInstance()->updateEntity($oTenant);
+				$oTenant->setExtendedProp(self::GetName() . '::UsedSpace', $iResult);
+				$oTenant->save();
 			}
 		}
 
@@ -101,7 +93,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 
 				if ($oTenant)
 				{
-					$iSize = $oTenant->{self::GetName() . '::UsedSpace'};
+					$iSize = isset($oTenant->{self::GetName() . '::UsedSpace'}) ? $oTenant->{self::GetName() . '::UsedSpace'} : 0;
 				}
 			}
 
