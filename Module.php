@@ -102,12 +102,12 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 
 				if ($oTenant)
 				{
-					$iSize = isset($oTenant->{self::GetName() . '::UsedSpace'}) ? $oTenant->{self::GetName() . '::UsedSpace'} : 0;
+					$iSize = isset($oTenant->{self::GetName() . '::UsedSpace'}) ? (int) $oTenant->{self::GetName() . '::UsedSpace'} : 0;
 				}
 			}
 
 			$mResult = array(
-				'Used' => $iSize,
+				'Used' => (int) $iSize,
 				'Limit' => $this->getConfig('SpaceLimitMb', 0) * 1024 * 1024
 			);
 		}
