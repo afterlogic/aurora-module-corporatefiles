@@ -25,16 +25,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 	{
 		parent::init();
 
-		
 		$this->subscribeEvent('Files::GetQuota::after', array($this, 'onAfterGetQuota'));
-
-		\Aurora\Modules\Core\Classes\Tenant::extend(
-			self::GetName(),
-			[
-				'UsedSpace' => array('bigint', 0),
-			]
-
-		);
 	}
 
 	/**
