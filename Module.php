@@ -18,89 +18,84 @@ namespace Aurora\Modules\CorporateFiles;
  */
 class Module extends \Aurora\Modules\PersonalFiles\Module
 {
-	protected static $sStorageType = 'corporate';
-	protected static $iStorageOrder = 20;
+    protected static $sStorageType = 'corporate';
+    protected static $iStorageOrder = 20;
 
-	public function init()
-	{
-		parent::init();
+    public function init()
+    {
+        parent::init();
 
-		$this->subscribeEvent('Files::GetQuota::after', array($this, 'onAfterGetQuota'));
-	}
+        $this->subscribeEvent('Files::GetQuota::after', array($this, 'onAfterGetQuota'));
+    }
 
-	/**
-	 * Obtains list of module settings.
-	 *
-	 * @return array
-	 */
-	public function GetSettings()
-	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
+    /**
+     * Obtains list of module settings.
+     *
+     * @return array
+     */
+    public function GetSettings()
+    {
+        \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 
-		return array(
-			'SpaceLimitMb' => $this->getConfig('SpaceLimitMb', 0),
-		);
-	}
+        return array(
+            'SpaceLimitMb' => $this->getConfig('SpaceLimitMb', 0),
+        );
+    }
 
-	/**
-	 * Updates module's settings - saves them to config.json file.
-	 *
-	 * @param int $SpaceLimitMb Space limit setting in Mb.
-	 * @return bool
-	 */
-	public function UpdateSettings($SpaceLimitMb)
-	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::TenantAdmin);
+    /**
+     * Updates module's settings - saves them to config.json file.
+     *
+     * @param int $SpaceLimitMb Space limit setting in Mb.
+     * @return bool
+     */
+    public function UpdateSettings($SpaceLimitMb)
+    {
+        \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::TenantAdmin);
 
-		$this->setConfig('SpaceLimitMb', $SpaceLimitMb);
-		return (bool) $this->saveModuleConfig();
-	}
+        $this->setConfig('SpaceLimitMb', $SpaceLimitMb);
+        return (bool) $this->saveModuleConfig();
+    }
 
-	public function UpdateUsedSpace()
-	{
-		$iResult = 0;
+    public function UpdateUsedSpace()
+    {
+        $iResult = 0;
 
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::NormalUser);
-		$oUser = \Aurora\System\Api::getAuthenticatedUser();
+        \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::NormalUser);
+        $oUser = \Aurora\System\Api::getAuthenticatedUser();
 
-		if ($oUser)
-		{
-			$oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantUnchecked($oUser->IdTenant);
+        if ($oUser) {
+            $oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantUnchecked($oUser->IdTenant);
 
-			if ($oTenant)
-			{
-				$iResult = $this->getManager()->getUserSpaceUsed($oUser->PublicId, [\Aurora\System\Enums\FileStorageType::Corporate]);
-				$oTenant->setExtendedProp(self::GetName() . '::UsedSpace', $iResult);
-				$oTenant->save();
-			}
-		}
+            if ($oTenant) {
+                $iResult = $this->getManager()->getUserSpaceUsed($oUser->PublicId, [\Aurora\System\Enums\FileStorageType::Corporate]);
+                $oTenant->setExtendedProp(self::GetName() . '::UsedSpace', $iResult);
+                $oTenant->save();
+            }
+        }
 
-		return $iResult;
-	}
+        return $iResult;
+    }
 
 
-	public function onAfterGetQuota($aArgs, &$mResult)
-	{
-		if ($this->checkStorageType($aArgs['Type']))
-		{
-			$iSize = 0;
+    public function onAfterGetQuota($aArgs, &$mResult)
+    {
+        if ($this->checkStorageType($aArgs['Type'])) {
+            $iSize = 0;
 
-			$oUser = \Aurora\Modules\Core\Module::Decorator()->GetUserUnchecked((int)$aArgs['UserId']);
+            $oUser = \Aurora\Modules\Core\Module::Decorator()->GetUserUnchecked((int)$aArgs['UserId']);
 
-			if ($oUser)
-			{
-				$oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantUnchecked($oUser->IdTenant);
+            if ($oUser) {
+                $oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantUnchecked($oUser->IdTenant);
 
-				if ($oTenant)
-				{
-					$iSize = isset($oTenant->{self::GetName() . '::UsedSpace'}) ? (int) $oTenant->{self::GetName() . '::UsedSpace'} : 0;
-				}
-			}
+                if ($oTenant) {
+                    $iSize = isset($oTenant->{self::GetName() . '::UsedSpace'}) ? (int) $oTenant->{self::GetName() . '::UsedSpace'} : 0;
+                }
+            }
 
-			$mResult = array(
-				'Used' => (int) $iSize,
-				'Limit' => $this->getConfig('SpaceLimitMb', 0) * 1024 * 1024
-			);
-		}
-	}
+            $mResult = array(
+                'Used' => (int) $iSize,
+                'Limit' => $this->getConfig('SpaceLimitMb', 0) * 1024 * 1024
+            );
+        }
+    }
 }
