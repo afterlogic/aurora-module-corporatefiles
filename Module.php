@@ -64,7 +64,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
         $oUser = \Aurora\System\Api::getAuthenticatedUser();
 
         if ($oUser) {
-            $oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantUnchecked($oUser->IdTenant);
+            $oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantWithoutRoleCheck($oUser->IdTenant);
 
             if ($oTenant) {
                 $iResult = $this->getManager()->getUserSpaceUsed($oUser->PublicId, [\Aurora\System\Enums\FileStorageType::Corporate]);
@@ -82,10 +82,10 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
         if ($this->checkStorageType($aArgs['Type'])) {
             $iSize = 0;
 
-            $oUser = \Aurora\Modules\Core\Module::Decorator()->GetUserUnchecked((int)$aArgs['UserId']);
+            $oUser = \Aurora\Modules\Core\Module::Decorator()->GetUserWithoutRoleCheck((int)$aArgs['UserId']);
 
             if ($oUser) {
-                $oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantUnchecked($oUser->IdTenant);
+                $oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantWithoutRoleCheck($oUser->IdTenant);
 
                 if ($oTenant) {
                     $iSize = isset($oTenant->{self::GetName() . '::UsedSpace'}) ? (int) $oTenant->{self::GetName() . '::UsedSpace'} : 0;
