@@ -29,6 +29,15 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
     }
 
     /**
+     *
+     * @return Module
+     */
+    public static function Decorator()
+    {
+        return parent::Decorator();
+    }
+
+    /**
      * Obtains list of module settings.
      *
      * @return array
