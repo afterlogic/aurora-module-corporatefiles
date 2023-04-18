@@ -38,6 +38,15 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
     }
 
     /**
+     *
+     * @return Settings
+     */
+    protected function GetModuleSettings()
+    {
+        return $this->oModuleSettings;
+    }
+
+    /**
      * Obtains list of module settings.
      *
      * @return array
