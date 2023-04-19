@@ -14,6 +14,8 @@ namespace Aurora\Modules\CorporateFiles;
  * @license https://afterlogic.com/products/common-licensing Afterlogic Software License
  * @copyright Copyright (c) 2023, Afterlogic Corp.
  *
+ * @property Settings $oModuleSettings
+ *
  * @package Modules
  */
 class Module extends \Aurora\Modules\PersonalFiles\Module
@@ -56,7 +58,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
         \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 
         return array(
-            'SpaceLimitMb' => $this->getConfig('SpaceLimitMb', 0),
+            'SpaceLimitMb' => $this->oModuleSettings->SpaceLimitMb,
         );
     }
 
@@ -112,7 +114,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
 
             $mResult = array(
                 'Used' => (int) $iSize,
-                'Limit' => $this->getConfig('SpaceLimitMb', 0) * 1024 * 1024
+                'Limit' => $this->oModuleSettings->SpaceLimitMb * 1024 * 1024
             );
         }
     }
