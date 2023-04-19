@@ -41,7 +41,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
      *
      * @return Settings
      */
-    protected function GetModuleSettings()
+    public function getModuleSettings()
     {
         return $this->oModuleSettings;
     }
