@@ -114,7 +114,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
                 $oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantWithoutRoleCheck($oUser->IdTenant);
 
                 if ($oTenant) {
-                    $iSize = isset($oTenant->{self::GetName() . '::UsedSpace'}) ? (int) $oTenant->{self::GetName() . '::UsedSpace'} : 0;
+                    $iSize = null !== $oTenant->getExtendedProp(self::GetName() . '::UsedSpace') ? (int) $oTenant->getExtendedProp(self::GetName() . '::UsedSpace') : 0;
                 }
             }
 
