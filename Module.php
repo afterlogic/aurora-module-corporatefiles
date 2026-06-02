@@ -61,7 +61,7 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
      */
     public function GetSettings()
     {
-        \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
+        \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::NormalUser);
 
         return array(
             'SpaceLimitMb' => $this->oModuleSettings->SpaceLimitMb,
