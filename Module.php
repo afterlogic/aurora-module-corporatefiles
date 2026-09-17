@@ -70,7 +70,14 @@ class Module extends \Aurora\Modules\PersonalFiles\Module
     {
         \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::TenantAdmin);
 
-        $this->setConfig('SpaceLimitMb', $SpaceLimitMb);
+        // GetQuota()/onAfterGetQuota multiplies this by 1024*1024 as a hard byte limit, so an
+        // unvalidated negative/zero/huge value here breaks quota enforcement (negative limit,
+        // no limit, or an overflowed byte count) rather than just rejecting the request.
+        if (!is_numeric($SpaceLimitMb) || (int) $SpaceLimitMb != $SpaceLimitMb || (int) $SpaceLimitMb < 1 || (int) $SpaceLimitMb > 1048576) {
+            throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter, null, 'InvalidInputParameter');
+        }
+
+        $this->setConfig('SpaceLimitMb', (int) $SpaceLimitMb);
         return (bool) $this->saveModuleConfig();
     }
 
